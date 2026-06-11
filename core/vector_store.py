@@ -44,12 +44,12 @@ class VectorStoreManager:
                 logger.info(f"FAISS向量库已保存，存储路径: {settings.VECTOR_DB_DIR}")
         else:
             raise ValueError(f"不支持的向量库类型: {settings.VECTOR_STORE_TYPE}")
-        
+
     def _save_faiss(self):
         """保存FAISS向量库"""
         if settings.VECTOR_STORE_TYPE == "faiss":
             self._store.save_local(str(settings.VECTOR_DB_DIR))
-    
+
     def add_documents(self, documents: list) -> int:
         """
         添加文档到向量库
@@ -67,7 +67,7 @@ class VectorStoreManager:
         except Exception as e:
             logger.error(f"添加文档到向量库失败: {e}")
             return 0
-        
+
     def delete_by_source(self, source: str) -> int:
         """
         根据源文件删除文档
@@ -85,7 +85,7 @@ class VectorStoreManager:
         else:
             logger.warning(f"FAISS模式下删除功能比较慢，建议使用Chroma")
             return self._delete_by_source_faiss(source)
-        
+
     def _delete_by_source_faiss(self, source: str) -> int:
         """
         FAISS模式的删除，是需要重构索引的
@@ -108,16 +108,16 @@ class VectorStoreManager:
             self._save_faiss()
             logger.info(f"成功删除源文件' {source} '的 {deleted_count} 个片段")
         return deleted_count
-    
-    def similarity_search(self, query: str, k: int = None, filter_dict: dict = None) -> list:
+
+    def similarity_search(self, query: str, k: int | None = None, filter_dict: dict | None = None) -> list:
         """ 相似度检索 """
         k = k or settings.SEARCH_TOP_KNone
         if filter_dict and settings.VECTOR_STORE_TYPE == "chroma":
             return self._store.similarity_search(query, k=k, filter=filter_dict)
         else:
             return self._store.similarity_search(query, k=k)
-        
-    def similarity_search_with_score(self, query: str, k: int = None, filter_dict: dict = None) -> list:
+
+    def similarity_search_with_score(self, query: str, k: int | None = None, filter_dict: dict | None = None) -> list:
         """ 相似度检索并返回相关性分数 """
         k = k or settings.SEARCH_TOP_K
         if filter_dict and settings.VECTOR_STORE_TYPE == "chroma":
@@ -141,7 +141,7 @@ class VectorStoreManager:
                 "vector_store_type": "faiss",
                 "persist_directory": str(settings.VECTOR_DB_DIR)
             }
-        
+
     def clear_all(self):
         """ 清空向量库 """
         if settings.VECTOR_STORE_TYPE == "chroma":

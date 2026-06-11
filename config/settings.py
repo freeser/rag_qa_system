@@ -70,6 +70,7 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS : list[str] = ["http://localhost:8501"]
     SECRET_KEY : str = "your-secret-key"
 
+    # 自动映射机制
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
