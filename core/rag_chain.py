@@ -47,7 +47,9 @@ class RAGChain:
                 ("human", "{input}"),
             ]
         )
-
+        if self.llm is None:
+            logger.error("LLM为空，停止执行")
+            return
         # 创建历史感知检索器
         history_aware_retriever = create_history_aware_retriever(
             self.llm,
@@ -84,7 +86,7 @@ class RAGChain:
 
         # 3. 组装完整的RAG链
         rag_chain = create_retrieval_chain(
-            history_aware_retriever, 
+            history_aware_retriever,
             question_answer_chain
         )
         logger.info("RAG问答链创建完成")
@@ -99,7 +101,7 @@ class RAGChain:
         """
         if not question.strip():
             return {"answer": "问题不能为空", "sources": [], "intent": "无效输入"}
-        
+
         # 1. 识别意图
         intent = self.intent_recognizer.recognize(question)
         logger.info(f"识别到的意图: {intent}")
@@ -115,7 +117,7 @@ class RAGChain:
             answer = result["answer"]
             source_docs = result.get("context", [])
             sources = []
-            for doc in source_docs: 
+            for doc in source_docs:
                 sources.append({
                     "source": doc.metadata.get("file_name", doc.metadata.get("source", "未知")),
                     "page": doc.metadata.get("page", 1),
@@ -131,7 +133,7 @@ class RAGChain:
         except Exception as e:
             logger.error(f"处理问题时出错: {str(e)}")
             return {"answer": "抱歉，处理问题时出错了", "sources": [], "intent": "系统错误"}
-        
+
     def get_chat_history(self, session_id: str = DEFAULT_SESSION_ID) -> list:
         """获取对话历史"""
         messages = self.memory_manager.get_chat_history(session_id)
@@ -140,7 +142,7 @@ class RAGChain:
             else {"role": "assistant", "content": msg.content}
             for msg in messages
             ]
-    
+
     def clear_session(self, session_id: str = DEFAULT_SESSION_ID):
         """清空会话历史"""
         self.memory_manager.clear_session(session_id)

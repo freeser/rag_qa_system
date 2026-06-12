@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     # 检索配置
     SEARCH_TOP_K : int = 5
     USE_RERANKER : bool = True
-    RERANKER_MODEL_NAME : str = "bge_reranker_base"
+    RERANKER_MODEL_NAME : str = "BAAI/bge-reranker-base"
 
     # LLM配置
     LLM_PROVIDER : Literal["openai", "siliconflow", "ollama"] = "siliconflow"
