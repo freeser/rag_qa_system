@@ -10,7 +10,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from core.document_loader import DocumentLoader
 from config.settings import settings
 from config.logging_config import setup_logging
-
 setup_logging()
 
 def test_document_loader():
@@ -37,3 +36,4 @@ def test_document_loader():
 
 if __name__ == "__main__":
     test_document_loader()
+    
